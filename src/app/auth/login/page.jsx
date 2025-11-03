@@ -71,6 +71,7 @@ export default function LoginPage() {
                           />
                         )}
                       </svg>
+                      <span className="text-xs">{showPassword ? "Hide" : "Show"}</span>
                     </button>
                   </div>
                   <input
@@ -82,12 +83,14 @@ export default function LoginPage() {
                   />
                 </div>
 
-                <button
+                <Link href="/dashboard/main">
+                        <button
                   type="submit"
                   className="w-full px-4 py-2 bg-[#B1BCC1] hover:bg-slate-500 text-white rounded-md transition-colors"
                 >
                   Log in
                 </button>
+                </Link>
               </form>
             </div>
 
@@ -151,8 +154,8 @@ export default function LoginPage() {
             </p>
 
             <div className="flex items-center justify-center gap-2 text-xs text-slate-600">
-              <Link href="/forgot-password" className="hover:underline">
-                Can't log in?
+              <Link href="/auth/forgot" className="hover:underline">
+                Forgot password?
               </Link>
               <span>·</span>
               <span>
