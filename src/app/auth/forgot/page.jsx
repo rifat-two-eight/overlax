@@ -1,18 +1,33 @@
+// app/auth/forgot/page.jsx
 "use client";
 
 import Link from "next/link";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ForgotPasswordPage() {
+  const { sendPasswordReset } = useAuth();   // <-- from AuthContext
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!email) return;
+
+  setLoading(true);
+  try {
+    await sendPasswordReset(email);
+    toast.success("Reset link sent! Check your inbox.");
     setSubmitted(true);
-  };
+  } catch (err) {
+    toast.error(err.message || "Failed to send reset link");
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // Reset form (optional: for demo)
   const handleReset = () => {
     setEmail("");
     setSubmitted(false);
@@ -20,6 +35,8 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
+
       {/* Header */}
       <header className="flex items-center justify-start p-6">
         <Link
@@ -33,16 +50,16 @@ export default function ForgotPasswordPage() {
         </Link>
       </header>
 
-      {/* Main Content */}
+      {/* Main */}
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md bg-[#E6F5FC] backdrop-blur-sm rounded-2xl shadow-lg p-8 md:p-12">
 
-          {/* === FORM STATE === */}
+          {/* ==== FORM STATE ==== */}
           {!submitted ? (
             <>
               <h1 className="text-3xl font-semibold text-center mb-6">Forgot Password?</h1>
               <p className="text-sm text-slate-600 text-center mb-8">
-                Enter your email and we'll send you a link to reset your password.
+                Enter your email and we’ll send you a link to reset your password.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -56,22 +73,23 @@ export default function ForgotPasswordPage() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 bg-white/80 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent"
+                    className="w-full px-3 py-2 bg-white/80 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400"
                     required
+                    disabled={loading}
                   />
                 </div>
 
-                {/* Button with rounded-md */}
                 <button
                   type="submit"
-                  className="w-full px-4 py-2 bg-[#B1BCC1] hover:bg-slate-500 text-white rounded-md transition-colors font-medium"
+                  disabled={loading}
+                  className="w-full px-4 py-2 bg-[#B1BCC1] hover:bg-slate-500 text-white rounded-md transition-colors font-medium disabled:opacity-50"
                 >
-                  Send Reset Link
+                  {loading ? "Sending…" : "Send Reset Link"}
                 </button>
               </form>
             </>
           ) : (
-            /* === SUCCESS STATE === */
+            /* ==== SUCCESS STATE ==== */
             <>
               <div className="text-center">
                 <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
