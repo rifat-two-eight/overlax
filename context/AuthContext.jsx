@@ -9,7 +9,7 @@ import {
   signOut,
   sendPasswordResetEmail,
   GoogleAuthProvider,
-  GithubAuthProvider,   // ← ADD THIS
+  GithubAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/firebase.config";
@@ -18,14 +18,23 @@ const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [idToken, setIdToken] = useState(null); // ← ADDED
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const token = await firebaseUser.getIdToken(); // ← GET TOKEN
+        setUser(firebaseUser);
+        setIdToken(token);
+      } else {
+        setUser(null);
+        setIdToken(null);
+      }
       setLoading(false);
     });
-    return unsubscribe;
+
+    return () => unsubscribe();
   }, []);
 
   const login = (email, password) =>
@@ -39,7 +48,6 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, provider);
   };
 
-  // ← ADD GITHUB LOGIN
   const githubSignIn = () => {
     const provider = new GithubAuthProvider();
     return signInWithPopup(auth, provider);
@@ -56,11 +64,12 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
+        idToken,           // ← EXPORTED
         loading,
         login,
         signup,
         googleSignIn,
-        githubSignIn,         
+        githubSignIn,
         logout,
         sendPasswordReset,
       }}
