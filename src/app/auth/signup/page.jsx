@@ -61,7 +61,7 @@ export default function SignupPage() {
         });
       }
       toast.success("Signed up with Google!");
-      router.push("/dashboard/main");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message || "Google sign-in failed");
     } finally {
@@ -81,7 +81,7 @@ export default function SignupPage() {
         });
       }
       toast.success("Signed up with GitHub!");
-      router.push("/dashboard/main");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message || "GitHub sign-in failed");
       toast.error("GitHub sign-in failed");

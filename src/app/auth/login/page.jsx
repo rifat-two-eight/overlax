@@ -29,7 +29,7 @@ export default function LoginPage() {
     try {
       await login(form.email, form.password);
       toast.success("Welcome back!");
-      router.push("/dashboard/main");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message || "Failed to log in");
     } finally {
@@ -42,7 +42,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await googleSignIn();
-      router.push("/dashboard/main");
+      router.push("/dashboard");
     } catch (err) {
       setError(err.message || "Google login failed");
     } finally {

@@ -23,7 +23,7 @@ export default function Nav() {
 
   const navItems = [
     { label: "Home", href: "/" },
-    { label: "Dashboard", href: "/dashboard/main", private: true },
+    { label: "Dashboard", href: "/dashboard", private: true },
     { label: "Reports", href: "/reports", private: true },
     { label: "FAQ", href: "/faq" },
   ];
