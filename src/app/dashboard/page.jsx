@@ -16,6 +16,7 @@ import CategoryModal from "@/components/dashboard/CategoryModal";
 // Import Icons & Utils
 import { format, isSameDay } from "date-fns";
 import { FileText, Image as ImageIcon, X, Trash2 } from "lucide-react";
+import AIWrapper from "@/components/AiWrapper";
 
 export default function Dashboard() {
   const { user, idToken } = useAuth();
@@ -373,7 +374,8 @@ useEffect(() => {
       : <FileText className="w-4 h-4" />;
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-slate-100">
+    <>
+      <div className="flex flex-col lg:flex-row min-h-screen bg-gradient-to-br from-blue-50 to-slate-100">
       {/* SIDEBAR */}
       <Sidebar
         categories={categories}
@@ -395,7 +397,7 @@ useEffect(() => {
       />
 
       {/* MAIN CONTENT */}
-      <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 ml-0 lg:ml-80  p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto space-y-8">
 
           {/* SEARCH BAR */}
@@ -518,9 +520,14 @@ useEffect(() => {
                 <p className="text-center text-slate-500 py-8">No tasks</p>
               )}
             </div>
+            
           </div>
         </div>
       )}
+    
     </div>
+    <AIWrapper user={user} tasks={tasks} />
+    </>
+    
   );
 }

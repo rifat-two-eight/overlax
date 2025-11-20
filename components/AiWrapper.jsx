@@ -1,16 +1,15 @@
-// app/components/AIWrapper.jsx
+// components/AIWrapper.jsx — EI TA THIK RAKHO
 "use client";
 
-import { usePathname } from "next/navigation";
 import AIAssistant from "./AiAssistant";
+import { useAuth } from "@/context/AuthContext";
 
-export default function AIWrapper() {
-  const pathname = usePathname();
+export default function AIWrapper({ user: propUser, tasks = [] }) {
+  const { user: contextUser } = useAuth();
 
-  // Homepage e AI button dekhabe na
-  if (pathname === "/" || pathname === "/home") {
-    return null;
-  }
+  // JODI PROP USER DIYE THAKE → SEITA USE KORO (dashboard e pass kora)
+  // NA HOLE CONTEXT THEKE NIBO (layout e thaka AI)
+  const finalUser = propUser || contextUser;
 
-  return <AIAssistant />;
+  return <AIAssistant user={finalUser} tasks={tasks} />;
 }

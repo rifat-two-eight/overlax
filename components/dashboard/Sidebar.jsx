@@ -41,7 +41,22 @@ export default function Sidebar({
 
 
   return (
-    <aside className="lg:w-80 bg-white border-r border-slate-200 p-6 space-y-6">
+    <aside
+  className="
+    bg-white border-r border-slate-200 p-6 space-y-6 
+
+    /* Desktop version */
+    lg:fixed lg:top-16 lg:left-0 
+    lg:w-80 
+    lg:h-[calc(100vh-64px)] 
+    lg:overflow-y-auto
+
+    /* Mobile version */
+    w-full
+  "
+>
+
+
       {/* ADD CATEGORY */}
       <button 
         onClick={() => setShowAddCategoryModal(true)} 
