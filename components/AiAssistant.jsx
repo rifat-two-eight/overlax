@@ -12,12 +12,19 @@ export default function AIAssistant({ user }) {
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [newTask, setNewTask] = useState({ title: "", category: "Personal", deadline: "" });
-  const [categories, setCategories] = useState(["Academic", "Personal", "Work"]);
+  const [newTask, setNewTask] = useState({
+    title: "",
+    category: "Personal",
+    deadline: "",
+  });
+  const [categories, setCategories] = useState([
+    "Academic",
+    "Personal",
+    "Work",
+  ]);
   const messagesEndRef = useRef(null);
   const intervalRef = useRef(null);
 
-  // Fetch tasks function
   const fetchTasks = async (showLoading = true) => {
     if (!user?.uid) {
       setTasks([]);
@@ -25,14 +32,17 @@ export default function AIAssistant({ user }) {
     }
 
     if (showLoading) setLoadingTasks(true);
-    
+
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`http://localhost:5000/api/tasks/${user.uid}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await fetch(
+        `http://localhost:5000/api/tasks/${user.uid}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -64,17 +74,22 @@ export default function AIAssistant({ user }) {
   // Fetch categories
   const fetchCategories = async () => {
     if (!user?.uid) return;
-    
+
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`http://localhost:5000/api/categories/${user.uid}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
+      const response = await fetch(
+        `http://localhost:5000/api/categories/${user.uid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
       if (response.ok) {
         const data = await response.json();
-        const catNames = data.categories.map(c => c.name);
-        setCategories(catNames.length > 0 ? catNames : ["Academic", "Personal", "Work"]);
+        const catNames = data.categories.map((c) => c.name);
+        setCategories(
+          catNames.length > 0 ? catNames : ["Academic", "Personal", "Work"]
+        );
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -86,7 +101,7 @@ export default function AIAssistant({ user }) {
     if (open && user?.uid) {
       // Immediate refresh when opened
       fetchTasks(false);
-      
+
       // Set up interval for continuous refresh
       intervalRef.current = setInterval(() => {
         fetchTasks(false);
@@ -113,14 +128,14 @@ export default function AIAssistant({ user }) {
       fetchTasks(false);
     };
 
-    window.addEventListener('taskUpdated', handleTaskChange);
-    window.addEventListener('taskAdded', handleTaskChange);
-    window.addEventListener('taskDeleted', handleTaskChange);
+    window.addEventListener("taskUpdated", handleTaskChange);
+    window.addEventListener("taskAdded", handleTaskChange);
+    window.addEventListener("taskDeleted", handleTaskChange);
 
     return () => {
-      window.removeEventListener('taskUpdated', handleTaskChange);
-      window.removeEventListener('taskAdded', handleTaskChange);
-      window.removeEventListener('taskDeleted', handleTaskChange);
+      window.removeEventListener("taskUpdated", handleTaskChange);
+      window.removeEventListener("taskAdded", handleTaskChange);
+      window.removeEventListener("taskDeleted", handleTaskChange);
     };
   }, [user]);
 
@@ -128,7 +143,7 @@ export default function AIAssistant({ user }) {
   useEffect(() => {
     if (open && chats.length === 0 && !loadingTasks) {
       let welcomeMsg = "";
-      
+
       if (!user?.uid) {
         // Guest welcome message
         welcomeMsg = `Hey there! 👋 I'm Overlax AI\n\n`;
@@ -137,259 +152,359 @@ export default function AIAssistant({ user }) {
       } else {
         // Logged-in user welcome message
         const firstName = user?.displayName?.trim().split(" ")[0] || "there";
-      // Calculate task statistics
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      const todayTasks = tasks.filter(t => {
-        const deadline = new Date(t.deadline);
-        return deadline >= today && deadline < tomorrow;
-      });
-      
-      const overdueTasks = tasks.filter(t => {
-        const deadline = new Date(t.deadline);
-        return deadline < today && t.status !== "done";
-      });
-      
-      const upcomingTasks = tasks.filter(t => {
-        const deadline = new Date(t.deadline);
-        return deadline >= tomorrow && t.status !== "done";
-      });
+        // Calculate task statistics
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
 
-      welcomeMsg = `Hey ${firstName}! 👋 I'm Overlax AI\n\n`;
-      
-      if (tasks.length === 0) {
-        welcomeMsg += "You're all clear! No tasks yet. Ready to add your first one? 🚀";
-      } else {
-        welcomeMsg += `📊 Your Task Overview:\n`;
-        welcomeMsg += `• Total: ${tasks.length} task${tasks.length !== 1 ? 's' : ''}\n`;
-        
-        if (todayTasks.length > 0) {
-          welcomeMsg += `• Today: ${todayTasks.length} task${todayTasks.length !== 1 ? 's' : ''} 📅\n`;
+        const todayTasks = tasks.filter((t) => {
+          const deadline = new Date(t.deadline);
+          return deadline >= today && deadline < tomorrow;
+        });
+
+        const overdueTasks = tasks.filter((t) => {
+          const deadline = new Date(t.deadline);
+          return deadline < today && t.status !== "done";
+        });
+
+        const upcomingTasks = tasks.filter((t) => {
+          const deadline = new Date(t.deadline);
+          return deadline >= tomorrow && t.status !== "done";
+        });
+
+        welcomeMsg = `Hey ${firstName}! 👋 I'm Overlax AI\n\n`;
+
+        if (tasks.length === 0) {
+          welcomeMsg +=
+            "You're all clear! No tasks yet. Ready to add your first one? 🚀";
+        } else {
+          welcomeMsg += `📊 Your Task Overview:\n`;
+          welcomeMsg += `• Total: ${tasks.length} task${
+            tasks.length !== 1 ? "s" : ""
+          }\n`;
+
+          if (todayTasks.length > 0) {
+            welcomeMsg += `• Today: ${todayTasks.length} task${
+              todayTasks.length !== 1 ? "s" : ""
+            } 📅\n`;
+          }
+
+          if (overdueTasks.length > 0) {
+            welcomeMsg += `• Overdue: ${overdueTasks.length} ⚠️\n`;
+          }
+
+          if (upcomingTasks.length > 0) {
+            welcomeMsg += `• Upcoming: ${upcomingTasks.length} 🔜\n`;
+          }
+
+          welcomeMsg += `\nAsk me anything! "আজকের টাস্ক", "overdue tasks", "show my work tasks" etc.`;
         }
-        
-        if (overdueTasks.length > 0) {
-          welcomeMsg += `• Overdue: ${overdueTasks.length} ⚠️\n`;
-        }
-        
-        if (upcomingTasks.length > 0) {
-          welcomeMsg += `• Upcoming: ${upcomingTasks.length} 🔜\n`;
-        }
-        
-        welcomeMsg += `\nAsk me anything! "আজকের টাস্ক", "overdue tasks", "show my work tasks" etc.`;
       }
-    }
 
-      setChats([{
-        id: "welcome",
-        text: welcomeMsg,
-        sender: "ai",
-      }]);
+      setChats([
+        {
+          id: "welcome",
+          text: welcomeMsg,
+          sender: "ai",
+        },
+      ]);
     }
   }, [open, user, tasks, loadingTasks, chats.length]);
 
   // Manual refresh button handler
   const handleManualRefresh = async () => {
     await fetchTasks(true);
-    
+
     // Show refresh notification in chat
     const refreshMsg = {
       id: Date.now().toString(),
-      text: `🔄 Tasks refreshed! You now have ${tasks.length} task${tasks.length !== 1 ? 's' : ''}.`,
-      sender: "ai"
+      text: `🔄 Tasks refreshed! You now have ${tasks.length} task${
+        tasks.length !== 1 ? "s" : ""
+      }.`,
+      sender: "ai",
     };
-    
-    setChats(prev => [...prev, refreshMsg]);
+
+    setChats((prev) => [...prev, refreshMsg]);
   };
 
   // Smart query handler
   const handleSmartQuery = (userText) => {
     const text = userText.toLowerCase();
     let response = "";
-    
+
     // Check if user is trying to access task features without login
-    const taskKeywords = ["task", "টাস্ক", "add", "create", "show", "list", "today", "আজ", 
-                          "tomorrow", "কাল", "overdue", "week", "urgent", "academic", "personal", "work"];
-    
-    const isTaskQuery = taskKeywords.some(keyword => text.includes(keyword));
-    
+    const taskKeywords = [
+      "task",
+      "টাস্ক",
+      "add",
+      "create",
+      "show",
+      "list",
+      "today",
+      "আজ",
+      "tomorrow",
+      "কাল",
+      "overdue",
+      "week",
+      "urgent",
+      "academic",
+      "personal",
+      "work",
+    ];
+
+    const isTaskQuery = taskKeywords.some((keyword) => text.includes(keyword));
+
     if (isTaskQuery && !user?.uid) {
       return "🔐 Please login first to access task management features!\n\nI can still chat with you about general topics. Try asking me something else! 😊";
     }
-    
+
     // Add task command
-    if (text.includes("add task") || text.includes("create task") || text.includes("new task") || 
-        text.includes("টাস্ক add") || text.includes("টাস্ক বানাও") || text.includes("নতুন টাস্ক")) {
+    if (
+      text.includes("add task") ||
+      text.includes("create task") ||
+      text.includes("new task") ||
+      text.includes("টাস্ক add") ||
+      text.includes("টাস্ক বানাও") ||
+      text.includes("নতুন টাস্ক")
+    ) {
       return "SHOW_ADD_FORM";
     }
-    
+
     // Refresh command
-    if (text.includes("refresh") || text.includes("update") || text.includes("রিফ্রেশ")) {
+    if (
+      text.includes("refresh") ||
+      text.includes("update") ||
+      text.includes("রিফ্রেশ")
+    ) {
       fetchTasks(false);
       return "🔄 Refreshing your tasks... Done! Let me know what you'd like to check.";
     }
-    
+
     // Today's tasks
-    if (text.includes("আজ") || text.includes("today") || text.includes("todaoy") || text.includes("ajke")) {
+    if (
+      text.includes("আজ") ||
+      text.includes("today") ||
+      text.includes("todaoy") ||
+      text.includes("ajke")
+    ) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
-      
-      const todayTasks = tasks.filter(t => {
+
+      const todayTasks = tasks.filter((t) => {
         const deadline = new Date(t.deadline);
         return deadline >= today && deadline < tomorrow;
       });
-      
+
       if (todayTasks.length === 0) {
-        response = "🎉 Great news! No tasks due today. You're free to relax or get ahead on upcoming work!";
+        response =
+          "🎉 Great news! No tasks due today. You're free to relax or get ahead on upcoming work!";
       } else {
         response = `📅 Today's Tasks (${todayTasks.length}):\n\n`;
         todayTasks.forEach((t, i) => {
-          const time = new Date(t.deadline).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-          response += `${i + 1}. ${t.title}\n   Category: ${t.category}\n   Time: ${time}\n   Status: ${t.status === "done" ? "✅ Done" : "⏳ Pending"}\n\n`;
+          const time = new Date(t.deadline).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+          response += `${i + 1}. ${t.title}\n   Category: ${
+            t.category
+          }\n   Time: ${time}\n   Status: ${
+            t.status === "done" ? "✅ Done" : "⏳ Pending"
+          }\n\n`;
         });
       }
       return response;
     }
-    
+
     // Tomorrow's tasks
-    if (text.includes("কাল") || text.includes("tomorrow") || text.includes("kal")) {
+    if (
+      text.includes("কাল") ||
+      text.includes("tomorrow") ||
+      text.includes("kal")
+    ) {
       const tomorrow = new Date();
       tomorrow.setHours(0, 0, 0, 0);
       tomorrow.setDate(tomorrow.getDate() + 1);
       const dayAfter = new Date(tomorrow);
       dayAfter.setDate(dayAfter.getDate() + 1);
-      
-      const tomorrowTasks = tasks.filter(t => {
+
+      const tomorrowTasks = tasks.filter((t) => {
         const deadline = new Date(t.deadline);
         return deadline >= tomorrow && deadline < dayAfter;
       });
-      
+
       if (tomorrowTasks.length === 0) {
         response = "✨ Nothing scheduled for tomorrow! You can plan ahead.";
       } else {
         response = `📆 Tomorrow's Tasks (${tomorrowTasks.length}):\n\n`;
         tomorrowTasks.forEach((t, i) => {
-          response += `${i + 1}. ${t.title} (${t.category})\n   ${new Date(t.deadline).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}\n\n`;
+          response += `${i + 1}. ${t.title} (${t.category})\n   ${new Date(
+            t.deadline
+          ).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })}\n\n`;
         });
       }
       return response;
     }
-    
+
     // Overdue tasks
-    if (text.includes("overdue") || text.includes("late") || text.includes("missed") || text.includes("বাকি")) {
+    if (
+      text.includes("overdue") ||
+      text.includes("late") ||
+      text.includes("missed") ||
+      text.includes("বাকি")
+    ) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      
-      const overdue = tasks.filter(t => {
+
+      const overdue = tasks.filter((t) => {
         const deadline = new Date(t.deadline);
         return deadline < today && t.status !== "done";
       });
-      
+
       if (overdue.length === 0) {
         response = "✅ Amazing! No overdue tasks. You're on top of everything!";
       } else {
         response = `⚠️ Overdue Tasks (${overdue.length}):\n\n`;
         overdue.forEach((t, i) => {
-          const daysLate = Math.floor((today - new Date(t.deadline)) / (1000 * 60 * 60 * 24));
-          response += `${i + 1}. ${t.title}\n   Category: ${t.category}\n   ${daysLate} day${daysLate !== 1 ? 's' : ''} overdue\n\n`;
+          const daysLate = Math.floor(
+            (today - new Date(t.deadline)) / (1000 * 60 * 60 * 24)
+          );
+          response += `${i + 1}. ${t.title}\n   Category: ${
+            t.category
+          }\n   ${daysLate} day${daysLate !== 1 ? "s" : ""} overdue\n\n`;
         });
       }
       return response;
     }
-    
+
     // Category-specific tasks
-    const categories = ["academic", "personal", "work", "এক্যাডেমিক", "পার্সোনাল", "ওয়ার্ক"];
+    const categories = [
+      "academic",
+      "personal",
+      "work",
+      "এক্যাডেমিক",
+      "পার্সোনাল",
+      "ওয়ার্ক",
+    ];
     for (const cat of categories) {
       if (text.includes(cat)) {
         const categoryName = cat.charAt(0).toUpperCase() + cat.slice(1);
-        const categoryTasks = tasks.filter(t => 
+        const categoryTasks = tasks.filter((t) =>
           t.category.toLowerCase().includes(cat.toLowerCase())
         );
-        
+
         if (categoryTasks.length === 0) {
           response = `No ${categoryName} tasks found.`;
         } else {
-          const pending = categoryTasks.filter(t => t.status !== "done").length;
+          const pending = categoryTasks.filter(
+            (t) => t.status !== "done"
+          ).length;
           response = `📁 ${categoryName} Tasks (${categoryTasks.length} total, ${pending} pending):\n\n`;
           categoryTasks.slice(0, 8).forEach((t, i) => {
-            response += `${i + 1}. ${t.title}\n   Due: ${new Date(t.deadline).toLocaleDateString()}\n   ${t.status === "done" ? "✅" : "⏳"}\n\n`;
+            response += `${i + 1}. ${t.title}\n   Due: ${new Date(
+              t.deadline
+            ).toLocaleDateString()}\n   ${
+              t.status === "done" ? "✅" : "⏳"
+            }\n\n`;
           });
         }
         return response;
       }
     }
-    
+
     // All tasks / task list
-    if (text.includes("all") || text.includes("list") || text.includes("tasks") || text.includes("টাস্ক") || text.includes("কয়টা")) {
-      const pending = tasks.filter(t => t.status !== "done").length;
-      const done = tasks.filter(t => t.status === "done").length;
+    if (
+      text.includes("all") ||
+      text.includes("list") ||
+      text.includes("tasks") ||
+      text.includes("টাস্ক") ||
+      text.includes("কয়টা")
+    ) {
+      const pending = tasks.filter((t) => t.status !== "done").length;
+      const done = tasks.filter((t) => t.status === "done").length;
 
       if (tasks.length === 0) {
         response = "You have no tasks yet! Ready to add your first one? 🚀";
       } else {
         response = `📋 All Tasks (${tasks.length} total)\n\n`;
         response += `✅ Completed: ${done}\n⏳ Pending: ${pending}\n\n`;
-        
+
         tasks.slice(0, 10).forEach((t, i) => {
           const status = t.status === "done" ? "✅" : "⏳";
-          response += `${i + 1}. ${status} ${t.title}\n   ${t.category} • ${new Date(t.deadline).toLocaleDateString()}\n\n`;
+          response += `${i + 1}. ${status} ${t.title}\n   ${
+            t.category
+          } • ${new Date(t.deadline).toLocaleDateString()}\n\n`;
         });
-        
+
         if (tasks.length > 10) {
           response += `...and ${tasks.length - 10} more tasks!\n`;
         }
       }
       return response;
     }
-    
+
     // Upcoming this week
-    if (text.includes("week") || text.includes("সপ্তাহ") || text.includes("upcoming")) {
+    if (
+      text.includes("week") ||
+      text.includes("সপ্তাহ") ||
+      text.includes("upcoming")
+    ) {
       const today = new Date();
       const nextWeek = new Date(today);
       nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const weekTasks = tasks.filter(t => {
+
+      const weekTasks = tasks.filter((t) => {
         const deadline = new Date(t.deadline);
         return deadline >= today && deadline <= nextWeek && t.status !== "done";
       });
-      
+
       if (weekTasks.length === 0) {
-        response = "🌟 Your week looks clear! No pending tasks in the next 7 days.";
+        response =
+          "🌟 Your week looks clear! No pending tasks in the next 7 days.";
       } else {
         response = `📅 This Week (${weekTasks.length} tasks):\n\n`;
         weekTasks.forEach((t, i) => {
-          response += `${i + 1}. ${t.title}\n   ${t.category}\n   ${new Date(t.deadline).toLocaleDateString()}\n\n`;
+          response += `${i + 1}. ${t.title}\n   ${t.category}\n   ${new Date(
+            t.deadline
+          ).toLocaleDateString()}\n\n`;
         });
       }
       return response;
     }
-    
+
     // Priority/urgent tasks
-    if (text.includes("urgent") || text.includes("priority") || text.includes("important")) {
+    if (
+      text.includes("urgent") ||
+      text.includes("priority") ||
+      text.includes("important")
+    ) {
       const today = new Date();
       const threeDays = new Date(today);
       threeDays.setDate(threeDays.getDate() + 3);
-      
-      const urgentTasks = tasks.filter(t => {
+
+      const urgentTasks = tasks.filter((t) => {
         const deadline = new Date(t.deadline);
         return deadline <= threeDays && t.status !== "done";
       });
-      
+
       if (urgentTasks.length === 0) {
         response = "✨ No urgent tasks! Everything's under control.";
       } else {
         response = `🔥 Urgent Tasks (due within 3 days):\n\n`;
         urgentTasks.forEach((t, i) => {
-          response += `${i + 1}. ${t.title}\n   ${t.category}\n   Due: ${new Date(t.deadline).toLocaleDateString()}\n\n`;
+          response += `${i + 1}. ${t.title}\n   ${
+            t.category
+          }\n   Due: ${new Date(t.deadline).toLocaleDateString()}\n\n`;
         });
       }
       return response;
     }
-    
+
     return null;
   };
 
@@ -400,27 +515,36 @@ export default function AIAssistant({ user }) {
     setMessage("");
 
     const userId = Date.now().toString();
-    setChats((prev) => [...prev, { id: userId, text: userText, sender: "user" }]);
+    setChats((prev) => [
+      ...prev,
+      { id: userId, text: userText, sender: "user" },
+    ]);
 
     // Check for smart queries first
     const smartResponse = handleSmartQuery(userText);
-    
+
     if (smartResponse === "SHOW_ADD_FORM") {
       setShowAddForm(true);
       setTimeout(() => {
-        setChats((prev) => [...prev, { 
-          id: Date.now() + 1, 
-          text: "📝 Great! Fill out the form below to add a new task:", 
-          sender: "ai" 
-        }]);
+        setChats((prev) => [
+          ...prev,
+          {
+            id: Date.now() + 1,
+            text: "📝 Great! Fill out the form below to add a new task:",
+            sender: "ai",
+          },
+        ]);
       }, 300);
       return;
     }
-    
+
     if (smartResponse) {
       setIsTyping(true);
       setTimeout(() => {
-        setChats((prev) => [...prev, { id: Date.now() + 1, text: smartResponse, sender: "ai" }]);
+        setChats((prev) => [
+          ...prev,
+          { id: Date.now() + 1, text: smartResponse, sender: "ai" },
+        ]);
         setIsTyping(false);
       }, 600);
       return;
@@ -434,14 +558,14 @@ export default function AIAssistant({ user }) {
     try {
       // Add task context to AI
       const contextMessage = `User has ${tasks.length} tasks. ${userText}`;
-      
+
       const response = await fetch("http://localhost:5000/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           message: contextMessage,
           uid: user?._id || user?.uid || "guest",
-          taskCount: tasks.length
+          taskCount: tasks.length,
         }),
       });
 
@@ -478,7 +602,11 @@ export default function AIAssistant({ user }) {
       }
     } catch (err) {
       setChats((prev) =>
-        prev.map((m) => (m.id === aiId ? { ...m, text: "Sorry, I'm having trouble right now! 😔" } : m))
+        prev.map((m) =>
+          m.id === aiId
+            ? { ...m, text: "Sorry, I'm having trouble right now! 😔" }
+            : m
+        )
       );
     } finally {
       setIsTyping(false);
@@ -493,30 +621,23 @@ export default function AIAssistant({ user }) {
   const userInitial = user?.displayName || user?.name || "G";
 
   // Quick action suggestions
-  const quickActions = user?.uid 
-    ? [
-        "আজকের টাস্ক",
-        "Add task",
-        "Overdue tasks",
-        "This week"
-      ]
-    : [
-        "What can you do?",
-        "Tell me a joke",
-        "Help me learn",
-        "General advice"
-      ];
+  const quickActions = user?.uid
+    ? ["আজকের টাস্ক", "Add task", "Overdue tasks", "This week"]
+    : ["What can you do?", "Tell me a joke", "Help me learn", "General advice"];
 
   // Handle task submission
   const handleAddTask = async (e) => {
     e.preventDefault();
-    
+
     if (!newTask.title.trim() || !newTask.deadline) {
-      setChats((prev) => [...prev, { 
-        id: Date.now(), 
-        text: "⚠️ Please fill in both title and deadline!", 
-        sender: "ai" 
-      }]);
+      setChats((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          text: "⚠️ Please fill in both title and deadline!",
+          sender: "ai",
+        },
+      ]);
       return;
     }
 
@@ -525,40 +646,46 @@ export default function AIAssistant({ user }) {
       const response = await fetch("http://localhost:5000/api/tasks", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           uid: user.uid,
           title: newTask.title.trim(),
           category: newTask.category,
-          deadline: newTask.deadline
-        })
+          deadline: newTask.deadline,
+        }),
       });
 
       if (response.ok) {
         setShowAddForm(false);
         setNewTask({ title: "", category: "Personal", deadline: "" });
-        
+
         // Trigger refresh
-        window.dispatchEvent(new Event('taskAdded'));
+        window.dispatchEvent(new Event("taskAdded"));
         await fetchTasks(false);
-        
-        setChats((prev) => [...prev, { 
-          id: Date.now(), 
-          text: `✅ Task "${newTask.title}" added successfully!`, 
-          sender: "ai" 
-        }]);
+
+        setChats((prev) => [
+          ...prev,
+          {
+            id: Date.now(),
+            text: `✅ Task "${newTask.title}" added successfully!`,
+            sender: "ai",
+          },
+        ]);
       } else {
         throw new Error("Failed to add task");
       }
     } catch (error) {
       console.error("Error adding task:", error);
-      setChats((prev) => [...prev, { 
-        id: Date.now(), 
-        text: "❌ Sorry, failed to add the task. Please try again!", 
-        sender: "ai" 
-      }]);
+      setChats((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          text: "❌ Sorry, failed to add the task. Please try again!",
+          sender: "ai",
+        },
+      ]);
     }
   };
 
@@ -574,7 +701,7 @@ export default function AIAssistant({ user }) {
         ) : (
           <>
             <Bot size={32} className="group-hover:scale-110 transition" />
-            {tasks.filter(t => {
+            {tasks.filter((t) => {
               const deadline = new Date(t.deadline);
               const today = new Date();
               today.setHours(0, 0, 0, 0);
@@ -583,14 +710,16 @@ export default function AIAssistant({ user }) {
               return deadline >= today && deadline < tomorrow;
             }).length > 0 && (
               <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
-                {tasks.filter(t => {
-                  const deadline = new Date(t.deadline);
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
-                  const tomorrow = new Date(today);
-                  tomorrow.setDate(tomorrow.getDate() + 1);
-                  return deadline >= today && deadline < tomorrow;
-                }).length}
+                {
+                  tasks.filter((t) => {
+                    const deadline = new Date(t.deadline);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    return deadline >= today && deadline < tomorrow;
+                  }).length
+                }
               </span>
             )}
           </>
@@ -609,16 +738,17 @@ export default function AIAssistant({ user }) {
               <div>
                 <p className="font-bold">Overlax AI</p>
                 <p className="text-xs opacity-90">
-                  {user?.uid 
-                    ? `${tasks.length} task${tasks.length !== 1 ? 's' : ''} • Auto-synced`
-                    : "Chat with me anytime!"
-                  }
+                  {user?.uid
+                    ? `${tasks.length} task${
+                        tasks.length !== 1 ? "s" : ""
+                      } • Auto-synced`
+                    : "Chat with me anytime!"}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               {user?.uid && (
-                <button 
+                <button
                   onClick={handleManualRefresh}
                   className="hover:bg-white/20 p-2 rounded-full transition"
                   title="Refresh tasks"
@@ -626,8 +756,8 @@ export default function AIAssistant({ user }) {
                   <RefreshCw size={18} />
                 </button>
               )}
-              <button 
-                onClick={() => setOpen(false)} 
+              <button
+                onClick={() => setOpen(false)}
                 className="hover:bg-white/20 p-2 rounded-full transition"
               >
                 <X size={22} />
@@ -640,7 +770,9 @@ export default function AIAssistant({ user }) {
             {chats.map((chat) => (
               <div
                 key={chat.id}
-                className={`flex items-start gap-3 ${chat.sender === "user" ? "flex-row-reverse" : ""}`}
+                className={`flex items-start gap-3 ${
+                  chat.sender === "user" ? "flex-row-reverse" : ""
+                }`}
               >
                 {/* Avatar */}
                 <div className="flex-shrink-0">
@@ -687,9 +819,18 @@ export default function AIAssistant({ user }) {
                 </div>
                 <div className="bg-white border border-gray-200 px-4 py-3 rounded-2xl rounded-bl-none">
                   <span className="flex gap-1">
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></span>
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></span>
-                    <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></span>
+                    <span
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "0ms" }}
+                    ></span>
+                    <span
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "150ms" }}
+                    ></span>
+                    <span
+                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      style={{ animationDelay: "300ms" }}
+                    ></span>
                   </span>
                 </div>
               </div>
@@ -724,14 +865,14 @@ export default function AIAssistant({ user }) {
                     <Bot size={18} />
                     Add New Task
                   </h3>
-                  <button 
+                  <button
                     onClick={() => setShowAddForm(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
                     <X size={18} />
                   </button>
                 </div>
-                
+
                 <form onSubmit={handleAddTask} className="space-y-3">
                   <div>
                     <label className="text-xs font-medium text-gray-700 block mb-1">
@@ -740,28 +881,34 @@ export default function AIAssistant({ user }) {
                     <input
                       type="text"
                       value={newTask.title}
-                      onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, title: e.target.value })
+                      }
                       placeholder="e.g., Complete assignment"
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <label className="text-xs font-medium text-gray-700 block mb-1">
                       Category
                     </label>
                     <select
                       value={newTask.category}
-                      onChange={(e) => setNewTask({ ...newTask, category: e.target.value })}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, category: e.target.value })
+                      }
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
                     >
-                      {categories.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
+                      {categories.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
                       ))}
                     </select>
                   </div>
-                  
+
                   <div>
                     <label className="text-xs font-medium text-gray-700 block mb-1">
                       Deadline *
@@ -769,12 +916,14 @@ export default function AIAssistant({ user }) {
                     <input
                       type="datetime-local"
                       value={newTask.deadline}
-                      onChange={(e) => setNewTask({ ...newTask, deadline: e.target.value })}
+                      onChange={(e) =>
+                        setNewTask({ ...newTask, deadline: e.target.value })
+                      }
                       className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
                       required
                     />
                   </div>
-                  
+
                   <div className="flex gap-2 pt-2">
                     <button
                       type="submit"
@@ -803,7 +952,9 @@ export default function AIAssistant({ user }) {
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && sendMessage()}
+              onKeyDown={(e) =>
+                e.key === "Enter" && !e.shiftKey && sendMessage()
+              }
               placeholder="Ask anything..."
               className="flex-1 px-5 py-3 rounded-full border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none text-sm"
               disabled={isTyping}
@@ -821,10 +972,18 @@ export default function AIAssistant({ user }) {
 
       <style jsx>{`
         @keyframes slide-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        .animate-slide-up { animation: slide-up 0.3s ease-out; }
+        .animate-slide-up {
+          animation: slide-up 0.3s ease-out;
+        }
       `}</style>
     </>
   );
