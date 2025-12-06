@@ -38,7 +38,7 @@ export default function TaskList({
                       <span>•</span>
                       <div className="flex items-center gap-1">
                         {getFileIcon(task.file)}
-                        <a href={`http://localhost:5000${task.file.path}`} target="_blank" rel="noopener noreferrer"
+                        <a href={`process.env.NEXT_PUBLIC_API_URL${task.file.path}`} target="_blank" rel="noopener noreferrer"
                           className="truncate max-w-32 text-blue-600 hover:underline flex items-center gap-1">
                           {task.file.originalName} <Download className="w-3 h-3" />
                         </a>

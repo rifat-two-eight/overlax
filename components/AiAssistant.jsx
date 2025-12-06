@@ -36,7 +36,7 @@ export default function AIAssistant({ user }) {
     try {
       const token = await user.getIdToken();
       const response = await fetch(
-        `http://localhost:5000/api/tasks/${user.uid}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${user.uid}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ export default function AIAssistant({ user }) {
     try {
       const token = await user.getIdToken();
       const response = await fetch(
-        `http://localhost:5000/api/categories/${user.uid}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/categories/${user.uid}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -559,7 +559,7 @@ export default function AIAssistant({ user }) {
       // Add task context to AI
       const contextMessage = `User has ${tasks.length} tasks. ${userText}`;
 
-      const response = await fetch("http://localhost:5000/api/ai/chat", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -643,7 +643,7 @@ export default function AIAssistant({ user }) {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch("http://localhost:5000/api/tasks", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

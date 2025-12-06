@@ -65,7 +65,7 @@ useEffect(() => {
 
   const checkStatus = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/telegram/status/${user.uid}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/telegram/status/${user.uid}`);
       if (res.ok) {
         const data = await res.json();
         setTelegramConnected(data.connected);
@@ -84,7 +84,7 @@ useEffect(() => {
   // API CALLS
   const saveUserProfile = async () => {
     try {
-      await fetch('http://localhost:5000/api/user/profile', {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${idToken}` },
         body: JSON.stringify({ uid: user.uid, email: user.email, displayName: user.displayName, photoURL: user.photoURL }),
@@ -95,7 +95,7 @@ useEffect(() => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${user.uid}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${user.uid}`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
       if (!res.ok) throw new Error("Failed");
@@ -111,7 +111,7 @@ useEffect(() => {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/categories/${user.uid}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories/${user.uid}`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
       if (!res.ok) throw new Error("Failed");
@@ -130,7 +130,7 @@ useEffect(() => {
     }
 
     try {
-      const res = await fetch(`http://localhost:5000/api/telegram/status/${user.uid}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/telegram/status/${user.uid}`);
       if (res.ok) {
         const data = await res.json();
         setTelegramConnected(data.connected);
@@ -164,7 +164,7 @@ useEffect(() => {
   // GOOGLE: CHECK CONNECTION
   const checkGoogleConnection = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/user/profile`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/profile`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
       if (res.ok) {
@@ -179,7 +179,7 @@ useEffect(() => {
   // GOOGLE: CONNECT
   const handleGoogleConnect = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/auth/google", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`, {
         headers: { Authorization: `Bearer ${idToken}` }
       });
       const data = await res.json();
@@ -208,7 +208,7 @@ useEffect(() => {
     if (!r.isConfirmed) return;
 
     try {
-      await fetch("http://localhost:5000/api/auth/google", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/google`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${idToken}` }
       });
@@ -244,7 +244,7 @@ useEffect(() => {
     if (file) formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:5000/api/tasks", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${idToken}` },
         body: formData,
@@ -269,7 +269,7 @@ useEffect(() => {
     if (file) formData.append("file", file);
 
     try {
-      const res = await fetch(`http://localhost:5000/api/tasks/${editingTask._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${editingTask._id}`, {
         method: "PATCH",
         headers: { "Authorization": `Bearer ${idToken}` },
         body: formData,
@@ -289,7 +289,7 @@ useEffect(() => {
     const r = await Swal.fire({ title: "Delete?", icon: "warning", showCancelButton: true });
     if (!r.isConfirmed) return;
     try {
-      await fetch(`http://localhost:5000/api/tasks/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${idToken}` }
       });
@@ -305,7 +305,7 @@ useEffect(() => {
     const name = newCategoryName.trim();
     if (!name) return Swal.fire({ icon: "warning", title: "Enter name" });
     try {
-      const res = await fetch("http://localhost:5000/api/categories", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
         body: JSON.stringify({ uid: user.uid, name }),
@@ -325,7 +325,7 @@ useEffect(() => {
     const name = editingCat.name.trim();
     if (!name) return Swal.fire({ icon: "warning", title: "Enter name" });
     try {
-      const res = await fetch(`http://localhost:5000/api/categories/${editingCat._id}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories/${editingCat._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${idToken}` },
         body: JSON.stringify({ name }),
@@ -350,7 +350,7 @@ useEffect(() => {
     });
     if (!r.isConfirmed) return;
     try {
-      await fetch(`http://localhost:5000/api/categories/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${idToken}` }
       });
@@ -499,7 +499,7 @@ useEffect(() => {
               {filteredTasks
                 .filter(t => isSameDay(new Date(t.deadline), selectedDate))
                 .map(t => (
-                  <div key={t._id} className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                  <div key={t._id} className="p-3 bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="font-medium text-slate-800">{t.title}</p>
