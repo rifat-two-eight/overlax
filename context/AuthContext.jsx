@@ -9,7 +9,6 @@ import {
   signOut,
   sendPasswordResetEmail,
   GoogleAuthProvider,
-  GithubAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "@/firebase.config";
@@ -48,11 +47,6 @@ export function AuthProvider({ children }) {
     return signInWithPopup(auth, provider);
   };
 
-  const githubSignIn = () => {
-    const provider = new GithubAuthProvider();
-    return signInWithPopup(auth, provider);
-  };
-
   const logout = () => signOut(auth);
 
   const sendPasswordReset = async (email) => {
@@ -64,12 +58,11 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         user,
-        idToken,      
+        idToken,
         loading,
         login,
         signup,
         googleSignIn,
-        githubSignIn,
         logout,
         sendPasswordReset,
       }}
