@@ -559,15 +559,18 @@ export default function AIAssistant({ user }) {
       // Add task context to AI
       const contextMessage = `User has ${tasks.length} tasks. ${userText}`;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/ai/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: contextMessage,
-          uid: user?._id || user?.uid || "guest",
-          taskCount: tasks.length,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/ai/chat`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: contextMessage,
+            uid: user?._id || user?.uid || "guest",
+            taskCount: tasks.length,
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error("Network error");
 
@@ -643,19 +646,22 @@ export default function AIAssistant({ user }) {
 
     try {
       const token = await user.getIdToken();
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/tasks`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uid: user.uid,
-          title: newTask.title.trim(),
-          category: newTask.category,
-          deadline: newTask.deadline,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/tasks`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uid: user.uid,
+            title: newTask.title.trim(),
+            category: newTask.category,
+            deadline: newTask.deadline,
+          }),
+        }
+      );
 
       if (response.ok) {
         setShowAddForm(false);
@@ -694,7 +700,7 @@ export default function AIAssistant({ user }) {
       {/* Floating AI Button - Always visible */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 hover:scale-110 transition duration-300 group"
+        className="fixed bottom-6 right-6 w-14 h-14 sm:w-16 sm:h-16 bg-linear-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-2xl flex items-center justify-center z-50 hover:scale-110 transition-all duration-300"
       >
         {open ? (
           <X size={32} />
@@ -728,11 +734,11 @@ export default function AIAssistant({ user }) {
 
       {/* Chat Window */}
       {open && (
-        <div className="fixed bottom-24 right-6 w-96 h-[620px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col z-50 overflow-hidden animate-slide-up">
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-sm md:inset-auto md:bottom-24 md:right-6 md:w-96 md:h-[620px] md:rounded-2xl md:shadow-2xl md:border md:border-slate-200">
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                 <Sparkles size={22} className="animate-pulse" />
               </div>
               <div>

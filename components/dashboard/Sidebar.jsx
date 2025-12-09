@@ -1,9 +1,5 @@
 import {
   FolderPlus,
-  Calendar,
-  X,
-  Edit2,
-  Trash2,
   CheckSquare,
   BookOpen,
   User,
@@ -11,15 +7,23 @@ import {
   Hash,
   MessageCircle,
   Info,
+  Edit2,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 
-// ADD THIS — iconMap
+// Icon Map
 const iconMap = {
   book: <BookOpen className="w-5 h-5" />,
   user: <User className="w-5 h-5" />,
   briefcase: <Briefcase className="w-5 h-5" />,
   folder: <Hash className="w-5 h-5" />,
+};
+
+// Helper: Check if task is overdue
+const isOverdue = (deadline) => {
+  if (!deadline) return false;
+  return new Date(deadline) < new Date();
 };
 
 export default function Sidebar({
@@ -36,39 +40,37 @@ export default function Sidebar({
 }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
+  // Active task count (completed + overdue excluded)
+  const getActiveCount = (categoryName) => {
+    if (categoryName === "All Tasks") {
+      return tasks.filter((t) => !t.completed && !isOverdue(t.deadline)).length;
+    }
+    return tasks.filter(
+      (t) =>
+        t.category === categoryName && !t.completed && !isOverdue(t.deadline)
+    ).length;
+  };
+
   const allCategories = [
     {
       name: "All Tasks",
       icon: <CheckSquare className="w-5 h-5" />,
-      count: tasks.length,
+      count: getActiveCount("All Tasks"),
     },
     ...categories.map((c) => ({
       name: c.name,
-      icon: iconMap[c.icon] || <Hash className="w-5 h-5" />, // ← NOW DEFINED!
-      count: tasks.filter((t) => t.category === c.name).length,
+      icon: iconMap[c.icon] || <Hash className="w-5 h-5" />,
+      count: getActiveCount(c.name),
       _id: c._id,
     })),
   ];
 
   return (
-    <aside
-      className="
-    bg-white border-r border-slate-200 p-6 space-y-6 
-
-    /* Desktop version */
-    lg:fixed lg:top-16 lg:left-0 
-    lg:w-80 
-    lg:h-[calc(100vh-64px)] 
-    lg:overflow-y-auto
-
-    /* Mobile version */
-    w-full
-  "
-    >
+    <aside className="bg-white border-r border-slate-200 p-6 space-y-6 lg:fixed lg:top-16 lg:left-0 lg:w-80 lg:h-[calc(100vh-64px)] lg:overflow-y-auto w-full">
       {/* ADD CATEGORY */}
       <button
         onClick={() => setShowAddCategoryModal(true)}
-        className="w-full bg-[#039BE5] hover:bg-[#0288d1] text-white font-semibold py-3 rounded-md flex items-center justify-center gap-2"
+        className="w-full bg-[#039BE5] hover:bg-[#0288d1] text-white font-semibold py-3 rounded-md flex items-center justify-center gap-2 transition-colors"
       >
         <FolderPlus className="w-5 h-5" /> Add Category
       </button>
@@ -105,17 +107,19 @@ export default function Sidebar({
                   {cat.count}
                 </span>
               </button>
+
+              {/* Edit/Delete for custom categories */}
               {cat._id && (
                 <div className="flex gap-1 ml-2">
                   <button
                     onClick={() => startEditCategory(cat)}
-                    className="p-1.5 text-slate-600 hover:text-slate-800"
+                    className="p-1.5 text-slate-600 hover:text-slate-800 transition-colors"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button
                     onClick={() => handleDeleteCategory(cat._id, cat.name)}
-                    className="p-1.5 text-red-600 hover:text-red-800"
+                    className="p-1.5 text-red-600 hover:text-red-800 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -132,7 +136,6 @@ export default function Sidebar({
           Integrations
         </h2>
 
-        {/* TELEGRAM ALERTS — PROFESSIONAL */}
         <div className="mt-3 flex items-center justify-between p-3 rounded-lg bg-slate-50">
           <div className="flex items-center gap-3">
             <MessageCircle
@@ -143,7 +146,6 @@ export default function Sidebar({
             <span className="font-medium">Telegram Alerts</span>
           </div>
 
-          {/* SMART BUTTON + INFO ICON */}
           <div className="flex items-center gap-2">
             {telegramConnected ? (
               <>
@@ -159,7 +161,6 @@ export default function Sidebar({
                     <Info className="w-4 h-4 text-slate-500" />
                   </button>
 
-                  {/* TOOLTIP */}
                   {showTooltip && (
                     <div className="absolute right-0 top-8 w-48 p-2 bg-slate-800 text-white text-xs rounded-md shadow-lg z-10">
                       Use{" "}
@@ -173,7 +174,7 @@ export default function Sidebar({
             ) : (
               <button
                 onClick={handleTelegramConnect}
-                className="text-xs text-green-600 hover:text-green-800 font-medium"
+                className="text-xs text-green-600 hover:text-green-800 font-medium transition-colors"
               >
                 Connect
               </button>

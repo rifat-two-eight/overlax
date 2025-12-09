@@ -39,6 +39,12 @@ const endOfMonth = (date) => {
   return new Date(date.getFullYear(), date.getMonth() + 1, 0);
 };
 
+// ADD THIS: Check if task is overdue
+const isOverdue = (deadline) => {
+  if (!deadline) return false;
+  return new Date(deadline) < new Date();
+};
+
 export default function CalendarView({
   currentMonth,
   setCurrentMonth,
@@ -47,6 +53,11 @@ export default function CalendarView({
 }) {
   const [hoveredDate, setHoveredDate] = useState(null);
   const [animating, setAnimating] = useState(false);
+
+  // FILTER ACTIVE TASKS ONLY (exclude completed & overdue)
+  const activeTasks = filteredTasks.filter(
+    (t) => !t.completed && !isOverdue(t.deadline)
+  );
 
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
@@ -68,11 +79,13 @@ export default function CalendarView({
   }
 
   const hasTaskOnDate = (date) =>
-    filteredTasks.some((t) => isSameDay(new Date(t.deadline), date));
+    activeTasks.some((t) => isSameDay(new Date(t.deadline), date));
+
   const getTaskCountOnDate = (date) =>
-    filteredTasks.filter((t) => isSameDay(new Date(t.deadline), date)).length;
+    activeTasks.filter((t) => isSameDay(new Date(t.deadline), date)).length;
+
   const getTasksForDate = (date) =>
-    filteredTasks.filter((t) => isSameDay(new Date(t.deadline), date));
+    activeTasks.filter((t) => isSameDay(new Date(t.deadline), date));
 
   const handleMonthChange = (direction) => {
     setAnimating(true);
@@ -225,7 +238,7 @@ export default function CalendarView({
                 {isHovered && hasTask && (
                   <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-20 w-48 p-2 bg-slate-900 text-white text-xs rounded-lg shadow-xl pointer-events-none">
                     <div className="font-semibold mb-1">
-                      {count} task{count > 1 ? "s" : ""}
+                      {count} upcoming task{count > 1 ? "s" : ""}
                     </div>
                     {tasks.slice(0, 2).map((task, i) => (
                       <div key={i} className="text-slate-300 truncate">
@@ -254,7 +267,7 @@ export default function CalendarView({
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-blue-500" />
-          <span className="text-slate-600">Has Tasks</span>
+          <span className="text-slate-600">Upcoming Tasks</span>
         </div>
       </div>
 

@@ -603,25 +603,39 @@ export default function Dashboard() {
     }
   };
 
-  // STATS CALCULATION
-  const getStats = () => {
-    const todayTasks = filteredTasks.filter((t) => isToday(t.deadline));
+  const isOverdue = (deadline) => {
+    if (!deadline) return false;
+    return new Date(deadline) < new Date();
+  };
 
-    // Find overlapping tasks (multiple tasks on same day)
-    const overlapTasks = todayTasks.filter((task, index) => {
-      return todayTasks.some(
+  // NEW STATS – ONLY ACTIVE TASKS COUNTED (Completed/Overdue excluded from Total, Today, Overlap)
+  const getStats = () => {
+    // Active = not completed & not overdue
+    const activeTasks = filteredTasks.filter(
+      (t) => !t.completed && !isOverdue(t.deadline)
+    );
+
+    // Today's active tasks
+    const todayActiveTasks = activeTasks.filter((t) => isToday(t.deadline));
+
+    // Overlap = multiple active tasks on the same day
+    const overlapTasks = todayActiveTasks.filter((task, index) => {
+      return todayActiveTasks.some(
         (otherTask, otherIndex) =>
           index !== otherIndex && isSameDay(task.deadline, otherTask.deadline)
       );
     });
 
-    const completedTasks = filteredTasks.filter((t) => t.completed);
+    // Completed = completed OR overdue (both count as done)
+    const completedCount = filteredTasks.filter(
+      (t) => t.completed || isOverdue(t.deadline)
+    ).length;
 
     return {
-      total: filteredTasks.length,
-      today: todayTasks.length,
-      overlap: overlapTasks.length,
-      completed: completedTasks.length,
+      total: activeTasks.length, // Only upcoming
+      today: todayActiveTasks.length, // Only active today
+      overlap: overlapTasks.length, // Only active overlapping
+      completed: completedCount, // Completed + Overdue
     };
   };
 

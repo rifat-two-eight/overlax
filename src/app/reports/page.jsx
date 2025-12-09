@@ -350,15 +350,8 @@ export default function PressureDashboard() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-slate-50 to-blue-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Overlax Pressure
-          </h1>
-        </div>
-
         {/* Category Filter */}
         <div className="mb-6 flex items-center gap-3 overflow-x-auto pb-2">
           <button
@@ -387,7 +380,7 @@ export default function PressureDashboard() {
         </div>
 
         {/* Top Row - Task Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
           {/* Task Due Today */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
             <h3 className="text-blue-600 text-lg font-semibold mb-4">
@@ -426,46 +419,15 @@ export default function PressureDashboard() {
               <p className="text-green-600 font-semibold">No upcoming tasks!</p>
             )}
           </div>
-
-          {/* Conflict Detected */}
-          <div
-            className={`${
-              hasConflict
-                ? "bg-gradient-to-br from-orange-400 to-orange-500"
-                : "bg-gray-100"
-            } rounded-2xl shadow-lg p-6`}
-          >
-            <div className="flex items-start gap-3">
-              <AlertTriangle
-                className={`w-8 h-8 ${
-                  hasConflict ? "text-white" : "text-gray-400"
-                }`}
-              />
-              <div>
-                <h3
-                  className={`text-lg font-semibold mb-2 ${
-                    hasConflict ? "text-white" : "text-gray-500"
-                  }`}
-                >
-                  Conflict Detected
-                </h3>
-                {hasConflict && (
-                  <div className="bg-white/90 rounded-lg px-3 py-1 text-sm text-orange-900 inline-block">
-                    {todayTasks.length} tasks today
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="">
           {/* Left Column - Pressure Gauge */}
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
+          <div className="bg-white rounded-2xl shadow-lg p-6 mb-5 border border-slate-200">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-blue-600 text-xl font-bold">
-                Pressure Gauge
+                Pressure Level
               </h3>
               <button
                 onClick={() => setShowSettingsModal(true)}
@@ -557,7 +519,7 @@ export default function PressureDashboard() {
             </div>
           </div>
 
-          {/* Right Column - Suggestions & Calendar */}
+          {/* Right Column - Suggestions */}
           <div className="lg:col-span-2 space-y-6">
             {/* Suggestions Box */}
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
@@ -613,69 +575,6 @@ export default function PressureDashboard() {
                   </p>
                 </div>
               )}
-            </div>
-
-            {/* Compact Calendar */}
-            <div className="bg-white rounded-2xl shadow-lg p-4 border border-slate-200">
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, -1))}
-                  className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5 text-slate-600" />
-                </button>
-                <h3 className="text-base font-bold text-slate-800">
-                  {formatDate(currentMonth)}
-                </h3>
-                <button
-                  onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}
-                  className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
-                >
-                  <ChevronRight className="w-5 h-5 text-slate-600" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-7 gap-1">
-                {["S", "M", "T", "W", "T", "F", "S"].map((day, i) => (
-                  <div
-                    key={i}
-                    className="text-center text-xs font-semibold text-slate-600 py-1"
-                  >
-                    {day}
-                  </div>
-                ))}
-
-                {days.map((dayObj, i) => {
-                  const dayTasks = filteredTasks.filter(
-                    (t) =>
-                      t.deadline &&
-                      isSameDay(new Date(t.deadline), dayObj.date) &&
-                      !t.completed
-                  );
-                  const isToday = isSameDay(dayObj.date, new Date());
-
-                  return (
-                    <div
-                      key={i}
-                      className={`aspect-square flex items-center justify-center text-xs rounded-lg transition-all cursor-pointer relative
-                        ${
-                          isToday
-                            ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold shadow-md scale-110 z-10"
-                            : !dayObj.isCurrentMonth
-                            ? "text-slate-300"
-                            : dayTasks.length > 0
-                            ? "bg-red-100 text-red-700 font-semibold hover:scale-110 hover:shadow-md"
-                            : "text-slate-700 hover:bg-slate-100"
-                        }`}
-                    >
-                      {dayObj.date.getDate()}
-                      {dayTasks.length > 0 && !isToday && (
-                        <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
             </div>
           </div>
         </div>
