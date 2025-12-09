@@ -358,7 +358,7 @@ export default function PressureDashboard() {
             onClick={() => setSelectedCategory("All")}
             className={`px-4 py-2 rounded-xl font-semibold transition-all whitespace-nowrap ${
               selectedCategory === "All"
-                ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                ? "bg-[#039BE5] text-white shadow-lg"
                 : "bg-white text-slate-700 hover:bg-slate-100"
             }`}
           >
@@ -370,7 +370,7 @@ export default function PressureDashboard() {
               onClick={() => setSelectedCategory(cat.name)}
               className={`px-4 py-2 rounded-xl font-semibold transition-all whitespace-nowrap ${
                 selectedCategory === cat.name
-                  ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
+                  ? "bg-[#039BE5] text-white shadow-lg"
                   : "bg-white text-slate-700 hover:bg-slate-100"
               }`}
             >
@@ -383,7 +383,7 @@ export default function PressureDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-6">
           {/* Task Due Today */}
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-blue-100">
-            <h3 className="text-blue-600 text-lg font-semibold mb-4">
+            <h3 className="text-[#039BE5] text-lg font-semibold mb-4">
               Task Due Today
             </h3>
             <div className="flex items-center justify-center">
@@ -426,7 +426,7 @@ export default function PressureDashboard() {
           {/* Left Column - Pressure Gauge */}
           <div className="bg-white rounded-2xl shadow-lg p-6 mb-5 border border-slate-200">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-blue-600 text-xl font-bold">
+              <h3 className="text-[#039BE5] text-xl font-bold">
                 Pressure Level
               </h3>
               <button
@@ -525,7 +525,7 @@ export default function PressureDashboard() {
             <div className="bg-white rounded-2xl shadow-lg p-6 border border-slate-200">
               <div className="flex items-center gap-2 mb-4">
                 <Lightbulb className="w-6 h-6 text-yellow-500" />
-                <h3 className="text-blue-600 text-xl font-bold">
+                <h3 className="text-purple-500 text-xl font-bold">
                   Smart Suggestions
                 </h3>
               </div>
@@ -674,7 +674,7 @@ export default function PressureDashboard() {
 
                 <button
                   onClick={handleSaveSettings}
-                  className="w-full py-4 bg-linear-to-r from-blue-600 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-[#039BE5] text-white font-bold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
                 >
                   <Save className="w-5 h-5" />
                   Save Settings

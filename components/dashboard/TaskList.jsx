@@ -114,11 +114,11 @@ export default function TaskList({
             <div className="flex-1 space-y-2">
               <div className="flex items-start gap-2">
                 {task.completed ? (
-                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 shrink-0" />
                 ) : overdue ? (
-                  <Clock className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0 animate-pulse" />
+                  <Clock className="w-5 h-5 text-red-500 mt-0.5 shrink-0 animate-pulse" />
                 ) : (
-                  <Clock className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                  <Clock className="w-5 h-5 text-blue-500 mt-0.5 shrink-0" />
                 )}
                 <div className="flex-1">
                   <p
@@ -160,13 +160,24 @@ export default function TaskList({
                   href={getFileUrl(task.file.path)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  download={
+                    task.file.type?.startsWith("image/") ||
+                    task.file.type === "application/pdf"
+                      ? false
+                      : true
+                  }
                   className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 bg-white px-3 py-2 rounded-lg border border-blue-200 hover:border-blue-300 transition-all w-fit group/file mt-2"
                 >
                   {getFileIcon(task.file)}
                   <span className="font-medium truncate max-w-[150px]">
                     {task.file.originalName}
                   </span>
-                  <Download className="w-3 h-3 group-hover/file:translate-y-0.5 transition-transform" />
+                  {task.file.type?.startsWith("image/") ||
+                  task.file.type === "application/pdf" ? (
+                    <span className="text-xs text-gray-500">Open</span>
+                  ) : (
+                    <Download className="w-3 h-3 group-hover/file:translate-y-0.5 transition-transform" />
+                  )}
                 </a>
               )}
             </div>
@@ -198,7 +209,7 @@ export default function TaskList({
       {/* Add Button */}
       <button
         onClick={openAddModal}
-        className="group w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]"
+        className="group w-full bg-[#039BE5] text-white font-semibold py-4 rounded-xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-[1.02]"
       >
         <div className="p-1.5 bg-white/20 rounded-lg group-hover:rotate-90 transition-transform duration-200">
           <Plus className="w-5 h-5" />
@@ -207,7 +218,7 @@ export default function TaskList({
       </button>
 
       {/* Active Tasks Section */}
-      <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl shadow-lg border border-slate-200 p-6 space-y-4">
+      <div className="bg-linear-to-br from-white to-slate-50 rounded-2xl shadow-lg border border-slate-200 p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <div className="w-1 h-6 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full" />
@@ -242,7 +253,7 @@ export default function TaskList({
       </div>
 
       {/* Completed / Overdue Section – Collapsible */}
-      <div className="bg-gradient-to-br from-white to-slate-50 rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
+      <div className="bg-linear-to-br from-white to-slate-50 rounded-2xl shadow-lg border border-slate-200 overflow-hidden">
         <button
           onClick={() => setShowCompleted(!showCompleted)}
           className="w-full px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors"

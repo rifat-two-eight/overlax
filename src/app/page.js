@@ -239,22 +239,24 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6">
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600">
+            <span className="bg-clip-text text-transparent bg-[#039BE5] to-pink-600">
               Master Your Tasks
             </span>
             <br />
-            <span className="text-slate-900">Never Miss a Deadline</span>
+            <span className="text-slate-700">Never Miss a Deadline</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-3xl mx-auto leading-relaxed">
             The intelligent task manager that keeps you organized with{" "}
-            <span className="font-semibold text-blue-600">smart reminders</span>
+            <span className="font-semibold text-[#039BE5]">
+              smart reminders
+            </span>
             ,{" "}
-            <span className="font-semibold text-purple-600">
+            <span className="font-semibold text-[#5819e1]">
               visual calendars
             </span>
             , and{" "}
-            <span className="font-semibold text-pink-600">
+            <span className="font-semibold text-[#039BE5]">
               conflict detection
             </span>
             .
@@ -262,12 +264,12 @@ export default function HomePage() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link href="/auth/signup">
-              <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 overflow-hidden">
+              <button className="group relative px-8 py-4 bg-[#039BE5] text-white font-semibold rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 overflow-hidden">
                 <span className="relative z-10 flex items-center gap-2">
-                  Get Started Free
+                  Get Started
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-purple-600 opacity-0 group-hover:opacity-100 transition-opacity" />
               </button>
             </Link>
 
@@ -289,7 +291,7 @@ export default function HomePage() {
                 }}
               >
                 <div className="flex items-center justify-center gap-3 mb-2">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg text-white">
+                  <div className="p-2 bg-purple-500 rounded-lg text-white">
                     {stat.icon}
                   </div>
                 </div>
@@ -299,40 +301,6 @@ export default function HomePage() {
                 <p className="text-sm text-slate-600">{stat.label}</p>
               </div>
             ))}
-          </div>
-
-          {/* Task Preview */}
-          <div className="relative max-w-5xl mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl -z-10" />
-            <div className="bg-gradient-to-br from-white/90 to-blue-50/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-slate-200">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-                  <LayoutDashboard className="w-6 h-6 text-blue-600" />
-                  Your Task Dashboard
-                </h3>
-                <div className="flex gap-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full" />
-                  <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-                  <div className="w-3 h-3 bg-green-500 rounded-full" />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="p-4 bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl border border-slate-200 animate-pulse"
-                    style={{
-                      animationDelay: `${i * 0.15}s`,
-                      animationDuration: "2s",
-                    }}
-                  >
-                    <div className="h-4 bg-slate-300 rounded w-3/4 mb-3" />
-                    <div className="h-3 bg-slate-200 rounded w-1/2" />
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -420,7 +388,7 @@ export default function HomePage() {
                 onClick={() => setActiveTab(useCase.id)}
                 className={`px-6 py-3 rounded-xl font-semibold transition-all flex items-center gap-2 ${
                   activeTab === useCase.id
-                    ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105"
+                    ? "bg-[#039BE5] text-white shadow-lg scale-105"
                     : "bg-white/80 text-slate-700 hover:bg-white"
                 }`}
               >
@@ -438,14 +406,14 @@ export default function HomePage() {
                   {useCase.tasks.map((task, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200 hover:scale-[1.02] transition-transform"
+                      className="flex items-center gap-4 p-4 bg-purple-50 rounded-xl border border-blue-200 hover:scale-[1.02] transition-transform"
                       style={{
                         animation: `slide-in-left 0.4s ease-out ${
                           idx * 0.1
                         }s both`,
                       }}
                     >
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center shrink-0">
                         <CheckCircle className="w-6 h-6 text-white" />
                       </div>
                       <p className="text-slate-800 font-medium flex-1">
@@ -463,7 +431,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl p-12 shadow-2xl relative overflow-hidden">
+          <div className="bg-[#039BE5] rounded-3xl p-12 shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS1vcGFjaXR5PSIwLjEiIHN0cm9rZS13aWR0aD0iMSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNncmlkKSIvPjwvc3ZnPg==')] opacity-30" />
 
             <div className="relative z-10">

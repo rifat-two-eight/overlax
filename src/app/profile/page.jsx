@@ -171,7 +171,7 @@ export default function ProfileSettings() {
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
-              className="w-full px-5 py-4 border-2 border-purple-200 rounded-2xl focus:border-purple-500 focus:outline-none text-lg"
+              className="w-full px-5 py-3 border-2 border-purple-200 rounded-2xl focus:border-purple-500 focus:outline-none text-lg"
               placeholder="Enter your name"
             />
           </div>
@@ -180,10 +180,10 @@ export default function ProfileSettings() {
           <button
             onClick={handleSave}
             disabled={saving || !displayName.trim()}
-            className={`w-full py-5 rounded-2xl font-bold text-white text-lg transition flex items-center justify-center gap-3 ${
+            className={`w-full py-3 rounded-2xl font-bold text-white text-lg transition flex items-center justify-center gap-3 ${
               saving || !displayName.trim()
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-2xl transform hover:scale-105"
+                : "bg-[#039BE5] hover:shadow-2xl transform hover:scale-105"
             }`}
           >
             {saving ? (

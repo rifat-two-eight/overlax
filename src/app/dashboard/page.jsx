@@ -608,7 +608,6 @@ export default function Dashboard() {
     return new Date(deadline) < new Date();
   };
 
-  // NEW STATS – ONLY ACTIVE TASKS COUNTED (Completed/Overdue excluded from Total, Today, Overlap)
   const getStats = () => {
     // Active = not completed & not overdue
     const activeTasks = filteredTasks.filter(
@@ -691,7 +690,7 @@ export default function Dashboard() {
                 placeholder="Search tasks..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 pr-4 py-3 border-2 border-[#039BE5] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
               />
             </div>
 

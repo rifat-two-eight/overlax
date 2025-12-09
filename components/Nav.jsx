@@ -25,7 +25,7 @@ export default function Nav() {
     { label: "Home", href: "/" },
     { label: "Dashboard", href: "/dashboard", private: true },
     { label: "Reports", href: "/reports", private: true },
-    { label: "History", href: "/history", private: true },
+    { label: "FAQ", href: "/faq" },
   ];
 
   const isActive = (href) => {

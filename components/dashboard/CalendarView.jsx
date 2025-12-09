@@ -94,17 +94,17 @@ export default function CalendarView({
   };
 
   return (
-    <div className="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-lg border border-blue-100 p-6 relative overflow-hidden">
+    <div className="bg-linear-to-br from-white to-blue-50 rounded-2xl shadow-lg border border-blue-100 p-6 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-30 -mr-16 -mt-16" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-br from-blue-100 to-purple-100 rounded-full blur-3xl opacity-30 -mr-16 -mt-16" />
 
       {/* Header */}
       <div className="flex items-center justify-between mb-6 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg">
+          <div className="p-2 bg-purple-500 rounded-lg">
             <Calendar className="w-5 h-5 text-white" />
           </div>
-          <h3 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h3 className="text-xl font-bold bg-[#039BE5] bg-clip-text text-transparent">
             {formatMonth(currentMonth)}
           </h3>
         </div>
@@ -118,7 +118,7 @@ export default function CalendarView({
           </button>
           <button
             onClick={() => setCurrentMonth(new Date())}
-            className="px-4 py-2 text-sm font-semibold text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+            className="px-4 py-2 text-sm font-semibold text-[#039BE5] hover:bg-blue-50 rounded-lg transition-all"
           >
             Today
           </button>
@@ -172,12 +172,12 @@ export default function CalendarView({
                   ${!inMonth ? "text-slate-300 pointer-events-none" : ""}
                   ${
                     today
-                      ? "bg-gradient-to-br from-blue-500 to-purple-500 text-white font-bold shadow-lg scale-105"
+                      ? "bg-purple-500 text-white font-bold shadow-lg scale-105"
                       : ""
                   }
                   ${
                     hasTask && !today
-                      ? "bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-2 border-blue-200 hover:scale-105 shadow-sm"
+                      ? "bg-linear-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-2 border-blue-200 hover:scale-105 shadow-sm"
                       : "hover:bg-slate-50"
                   }
                   ${
@@ -262,7 +262,7 @@ export default function CalendarView({
       {/* Legend */}
       <div className="mt-6 pt-4 border-t border-slate-200 flex items-center justify-center gap-6 text-xs">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-500" />
+          <div className="w-3 h-3 rounded-full bg-purple-500" />
           <span className="text-slate-600">Today</span>
         </div>
         <div className="flex items-center gap-2">
